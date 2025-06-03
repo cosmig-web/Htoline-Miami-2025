@@ -35,9 +35,5 @@ public class PlayerMove : MonoBehaviour
         
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(transform.position, Vector3.forward);
-    }
+   
 }
