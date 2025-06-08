@@ -1,55 +1,63 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public List<Vector2> Points;
-    public int currentPathIndex = 1;
-    private bool repeate = true;
+    public GameObject player;
+    public float speed;
+    public List<Vector2> waypoints;
+    public int currentWaypoint;
+    public float dis;
     public bool loop = true;
-    public float radius;
-    public Transform player;
-    public int speed = 5;
-    public Vector2 size;
-
-    private Vector2 target;
+    
+    private float distance;
+    private Vector3 target;
+    private bool repeate = false;
     private int indexer = 0;
-    private Rigidbody2D rb;
 
     void Start()
     {
-        target = Points[currentPathIndex];
-        rb = GetComponent<Rigidbody2D>();
+      target = waypoints[currentWaypoint];
     }
 
     void Update()
     {
-        
-        var isPlayerInRange = Physics2D.OverlapCircle(transform.position, radius, LayerMask.GetMask("Player"));
-        if (isPlayerInRange)
-        {
-            transform.position += transform.up * speed * Time.deltaTime;
-            rb.SetRotation(Quaternion.LookRotation(transform.forward, player.position));
+        bool PlayerInRange = Vector2.Distance(player.transform.position, transform.position) <= dis;
 
+
+        if (PlayerInRange)
+        {
+            distance = Vector2.Distance(player.transform.position, transform.position);
+            Vector2 direction = player.transform.position - transform.position;
+            direction.Normalize();
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(Vector3.forward *  angle);
+            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
         }
-
-        if (!isPlayerInRange)
+        else
         {
+            distance = Vector2.Distance(target, transform.position);
+            Vector2 direction = target - transform.position;
+            direction.Normalize();
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(Vector3.forward *  angle);
+            transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
             if (Vector3.Distance(transform.position, target) < 0.3f)
             {
                 if (!repeate)
                 {
-                    currentPathIndex++;
+                    currentWaypoint++;
                     indexer++;
                 }
 
                 if (repeate)
                 {
-                    currentPathIndex--;
+                    currentWaypoint--;
                     indexer++;
                 }
-                target = Points[currentPathIndex];
-                if (1+(indexer) >= Points.Count)
+                target = waypoints[currentWaypoint];
+                if (1+(indexer) >= waypoints.Count)
                 {
                     
                     indexer = 0;
@@ -60,24 +68,24 @@ public class Enemy : MonoBehaviour
                     
                 }
 
-                if (currentPathIndex == 0)
+                if (currentWaypoint == 0)
                 {
                     repeate = false;
                 }
             }
-            transform.LookAt(target);
-            transform.position += transform.forward * speed * Time.deltaTime;
-            transform.rotation = Quaternion.Euler(transform.rotation.x, 0, transform.rotation.z);
             
         }
-        
+
     }
+
+    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        for (int i = 0; i < Points.Count - 1; i++)
+        for (int i = 0; i < waypoints.Count - 1; i++)
         {
-            Gizmos.DrawLine(Points[i], Points[i + 1]);
+            Gizmos.DrawLine(waypoints[i], waypoints[i + 1]);
         }
     } 
 }
