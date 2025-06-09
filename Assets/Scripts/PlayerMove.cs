@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -8,12 +9,10 @@ public class PlayerMove : MonoBehaviour
     public Transform camera;
     public SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
-        
-    private Rigidbody2D rb;
+    
     
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -32,8 +31,7 @@ public class PlayerMove : MonoBehaviour
         var x = Input.GetAxisRaw("Horizontal");
         var y = Input.GetAxisRaw("Vertical");
         transform.position = new  Vector3(transform.position.x + x * Time.deltaTime * speed, transform.position.y + y * Time.deltaTime * speed, transform.position.z);
-        
     }
 
-   
+    
 }

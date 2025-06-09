@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Animations : MonoBehaviour
 {
@@ -43,5 +44,16 @@ public class Animations : MonoBehaviour
             spriteRenderer.sprite = sprites[0];
             Destroy(other.gameObject);
         }
+        if (other.gameObject.CompareTag("Bullet") )
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
     }
+
+    
 }

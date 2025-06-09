@@ -10,15 +10,28 @@ public class Enemy : MonoBehaviour
     public int currentWaypoint;
     public float dis;
     public bool loop = true;
+    public bool Gunner = false;
+    public Transform muzzle;
+    public Sprite[] sprites;
+    public bool HasGun = false;
+    public Transform Bullet;
+    public float fireRate = 0.5f;
+
+    
     
     private float distance;
     private Vector3 target;
     private bool repeate = false;
     private int indexer = 0;
 
+    private float TrueFireRate;
+    private float timer = 1;
+    
+
     void Start()
     {
       target = waypoints[currentWaypoint];
+      TrueFireRate = fireRate;
     }
 
     void Update()
@@ -34,6 +47,21 @@ public class Enemy : MonoBehaviour
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(Vector3.forward *  angle);
             transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+            if (Gunner)
+            {
+                if (timer <=0 && HasGun && fireRate <= 0 )
+                {
+
+                    Instantiate(Bullet, muzzle.position, muzzle.rotation);
+                    fireRate = TrueFireRate;
+                    timer = 1;
+                }else if (HasGun)
+                {
+
+                }
+                fireRate -= Time.fixedDeltaTime;
+                timer -= Time.deltaTime;
+            }
         }
         else
         {
@@ -78,14 +106,14 @@ public class Enemy : MonoBehaviour
 
     }
 
-    
-
-    private void OnDrawGizmos()
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        Gizmos.color = Color.red;
-        for (int i = 0; i < waypoints.Count - 1; i++)
+        if (other.gameObject.CompareTag("Bullet"))
         {
-            Gizmos.DrawLine(waypoints[i], waypoints[i + 1]);
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+            
         }
-    } 
+    }
+    
 }
