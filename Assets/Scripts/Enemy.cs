@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour
 {
@@ -26,12 +27,14 @@ public class Enemy : MonoBehaviour
 
     private float TrueFireRate;
     private float timer = 1;
+    private AudioSource audio;
     
 
     void Start()
     {
       target = waypoints[currentWaypoint];
       TrueFireRate = fireRate;
+      audio = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -110,6 +113,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bullet"))
         {
+            audio.Play();
             Destroy(other.gameObject);
             Destroy(gameObject);
             

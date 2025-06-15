@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class Animations : MonoBehaviour
 {
@@ -10,13 +11,16 @@ public class Animations : MonoBehaviour
     bool HasGun = false;
     public Transform Bullet;
     public float fireRate = 0.5f;
+    
 
     private float TrueFireRate;
+    private AudioSource audio;
     
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         TrueFireRate = fireRate;
+        audio = GetComponent<AudioSource>();
     }
 
 
@@ -29,6 +33,8 @@ public class Animations : MonoBehaviour
             spriteRenderer.sprite = sprites[1];
             Instantiate(Bullet, muzzle.position, muzzle.rotation);
             fireRate = TrueFireRate;
+            audio.pitch = Random.Range(0.8f, 1.2f);
+            audio.Play();
         }else if (HasGun)
         {
             spriteRenderer.sprite = sprites[0];
